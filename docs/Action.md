@@ -11,8 +11,8 @@ local reload = manager:AddAction("Reload", {
 })
 ```
 
-- `Active`: Whether the action can receive input. Default: `true`.
-- `UserData`: Your own data. The system does not use it.
+* `Active`: Whether the action can receive input. Default: `true`.
+* `UserData`: Your own data. The system does not use it.
 
 Action names must be unique inside a manager.
 
@@ -29,9 +29,9 @@ One global key can only belong to one action. For example, if `R` is bound to `R
 
 Supported keys:
 
-- `Enum.KeyCode`, such as `Enum.KeyCode.R`
-- `Enum.UserInputType`, such as `Enum.UserInputType.MouseButton1`
-- `"mouse_wheel_up"` or `"mouse_wheel_down"`
+* `Enum.KeyCode`, such as `Enum.KeyCode.R`
+* `Enum.UserInputType`, such as `Enum.UserInputType.MouseButton1`
+* `"mouse_wheel_up"` or `"mouse_wheel_down"`
 
 ## Receive input
 
@@ -49,8 +49,10 @@ end)
 
 `state` is either:
 
-- `"began"`: The player pressed a key or started an input.
-- `"ended"`: The player released a key or ended an input.
+* `"began"`: The player pressed a key or started an input.
+* `"ended"`: The player released a key or ended an input.
+
+> **Note:** `InputChanged` events are also passed through the manager and trigger actions with `"began"` as their state. `InputChanged` does not produce an `"ended"` state.
 
 All `Triggered` arguments:
 
@@ -66,10 +68,10 @@ action.Triggered:Connect(function(
 end)
 ```
 
-- `key` is the input that triggered the action. It is `nil` when `manager:TriggerAction()` was used.
-- `inputPosition` can be useful for mouse or touch input.
-- `fallbackFrom` is the fallback context that supplied the action, if any.
-- `fallbackedContexts` lists the contexts that were checked.
+* `key` is the input that triggered the action. It is `nil` when `manager:TriggerAction()` or `action:Trigger()` was used.
+* `inputPosition` can be useful for mouse or touch input.
+* `fallbackFrom` is the fallback context that supplied the action, if any.
+* `fallbackedContexts` lists the contexts that were checked.
 
 ## Enable or disable an action
 
@@ -78,11 +80,15 @@ reload:Disable()  -- Keeps its keys, but does not run.
 reload:Activate() -- Allows it to run again.
 ```
 
+The current state is available as `reload.Active`.
+
 ## Trigger an action
 
 ```lua
-reload:Trigger("began")  -- manually trigger the run by object itself
+reload:Trigger("began") -- Manually trigger the action through the Action object.
 ```
+
+You can also use `manager:TriggerAction()` to trigger an action directly, or `manager:TriggerKey()` to simulate a key input and run it through the normal input resolution system.
 
 The current state is available as `reload.Active`.
 
@@ -102,11 +108,11 @@ end
 
 ## Action signals
 
-- `Triggered(state, gameProcessed, key, inputPosition, fallbackFrom, fallbackedContexts)`: The action was triggered.
-- `Activated()`: `Activate()` was called.
-- `Disabled()`: `Disable()` was called.
-- `KeyAdded(key)`: A key was bound successfully.
-- `KeyRemoved(key)`: A key was removed successfully.
+* `Triggered(state, gameProcessed, key, inputPosition, fallbackFrom, fallbackedContexts)`: The action was triggered.
+* `Activated()`: `Activate()` was called.
+* `Disabled()`: `Disable()` was called.
+* `KeyAdded(key)`: A key was bound successfully.
+* `KeyRemoved(key)`: A key was removed successfully.
 
 ```lua
 reload.KeyAdded:Connect(function(key)
